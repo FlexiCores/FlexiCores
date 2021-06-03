@@ -1,0 +1,8 @@
+work
+*.wlf
+transcript
+*.vcd
+pnr_work
+params.v
+*.lst
+*.vstf

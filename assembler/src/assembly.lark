@@ -1,0 +1,60 @@
+start: program
+
+program: line*
+
+line: label? instruction comment?
+    | label comment?
+    | comment
+
+comment: /;[^\n]*/
+
+instruction: immediate_instruction
+           | register_instruction
+           | store_instruction
+           | branch_instruction
+           | loadbyte_instruction
+
+immediate_instruction: IMMEDIATE_OPCODE immediate_value
+
+loadbyte_instruction: "lb"i BYTE_IMMEDIATE
+
+BYTE_IMMEDIATE: /0x[0-9a-f][0-9a-f]/
+              | /25[0-5]/
+              | /1[0-9][0-9]/
+              | /[0-9][0-9]/
+              | /[0-9]/
+           
+IMMEDIATE_OPCODE: "addi"i | "xori"i | "nandi"i
+
+immediate_value: HEXIMM | BINIMM | DECIMM
+
+HEXIMM: /0x[0-9a-f]/
+BINIMM: /0b[01][01][01][01]/
+DECIMM: /1[0-5]/ | /[0-9]/ 
+
+register_instruction: REGISTER_OPCODE REGISTER_VALUE
+
+REGISTER_OPCODE: "add"i | "xor"i | "nand"i | "load"i
+
+REGISTER_VALUE: /r[0-7]/
+
+store_instruction: "store"i STORE_REGISTER_VALUE
+STORE_REGISTER_VALUE: "r0" | /r[2-7]/
+
+branch_instruction: "branch" branch_target
+branch_target: LABEL_IDENTIFIER
+             | BRANCH_IMMEDIATE
+
+label: LABEL_IDENTIFIER ":"
+LABEL_IDENTIFIER: /[a-zA-Z_][0-9a-zA-Z]*/
+
+BRANCH_IMMEDIATE: /0x[0-7][0-9a-f]/
+                | /0x[0-9a-f]/
+                | /[1][2][0-7]/
+                | /[1][01][0-9]/
+                | /[1-9][0-9]/
+                | /[0-9]/
+
+
+%import common.WS
+%ignore WS
