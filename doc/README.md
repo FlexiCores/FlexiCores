@@ -20,7 +20,7 @@ IPORT and OPORT ports.
 
 ### PC
 
-The program counter is a 6-bit register
+The program counter is a 7-bit register
 
 ### Regfile
 
