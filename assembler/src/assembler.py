@@ -201,6 +201,9 @@ if __name__ == '__main__':
 
     if args['<output-file>'] is not None:
         with open(args['<output-file>'], 'wb') as f:
-            f.write(binary)
+            bstr: bytes = '\n'.join(list(map(
+                lambda z: f'{z:02x}', binary))).encode('utf-8')
+            f.write(bstr)
+            f.write(b'\n')
     else:
         stdwrite(binary)
