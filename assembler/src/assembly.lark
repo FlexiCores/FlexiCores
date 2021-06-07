@@ -46,7 +46,7 @@ branch_target: LABEL_IDENTIFIER
              | BRANCH_IMMEDIATE
 
 label: LABEL_IDENTIFIER ":"
-LABEL_IDENTIFIER: /[a-zA-Z_][0-9a-zA-Z]*/
+LABEL_IDENTIFIER: /[a-zA-Z_][0-9a-zA-Z_]*/
 
 BRANCH_IMMEDIATE: /0x[0-7][0-9a-f]/
                 | /0x[0-9a-f]/
