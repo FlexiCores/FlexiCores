@@ -5,6 +5,6 @@ LOOP:
     load r0
     addi 1
     store r0 
-    branch LOOP  // 5
+    branch LOOP  ; 5
     xori 15
-    branch LOOP  // 7
+    branch LOOP  ; 7
