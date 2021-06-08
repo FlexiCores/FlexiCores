@@ -150,8 +150,15 @@ void run(const char* mem, int ncycles)
         printf("Cycle %0d:\n\t"
                "PC: %0d\n\t"
                "A:  %0d\n\t"
-               "RF[0]: %0d\n",
-               count++, as.PC, as.A, as.RF[0]);
+               "RF[0]: %0d\n\t"
+               "RF[1]: %0d\n\t"
+               "RF[2]: %0d\n\t"
+               "RF[3]: %0d\n\t"
+               "RF[4]: %0d\n\t"
+               "RF[5]: %0d\n\t"
+               "RF[6]: %0d\n\t"
+               "RF[7]: %0d\n",
+               count++, as.PC, as.A, as.RF[0], as.RF[1], as.RF[2], as.RF[3], as.RF[4], as.RF[5], as.RF[6], as.RF[7]);
         uint8_t instr, operand, result;
         instr = fetch_instr(mem);
         operand = get_operand(instr);
@@ -203,19 +210,32 @@ int main(int argc, char** argv)
     }
     char* mem = load_mem(argv[1]);
     // char mymem[256] = {
-    //      0x5F // NANDI 0xF
-    //     ,0x47 // ADDI 0x7
-    //     ,0x78 // STORE into 0
-    //     // LOOP
-    //     ,0x70 // LOAD from 0
-    //     ,0x4F // ADDI 0x0F
-    //     ,0x78 // STORE into 0
-    //     ,0x6F // INV (XORI 0xF)
-    //     ,0x83 // BR LOOP
-    //     ,0x6F // INV
-    //     // HALT LOOP
-    //     ,0x89 // BR HALT LOOP
+    //     0x50,
+    //     0x41,
+    //     0x78,
+    //     0x70,
+    //     0x44,
+    //     0x7a,
+    //     0x70,
+    //     0x47,
+    //     0x7b,
+    //     0x73,
+    //     0x96,
+    //     0x72,
+    //     0x99,
+    //     0x72,
+    //     0x4f,
+    //     0x7a,
+    //     0x73,
+    //     0x4f,
+    //     0x7b,
+    //     0x89,
+    //     0x6f,
+    //     0x89,
+    //     0x70,
+    //     0x4f,
+    //     0x78
     // };
-    // run(mymem, 100);
+    run(mem, 200);
     free_mem(mem);
 }
