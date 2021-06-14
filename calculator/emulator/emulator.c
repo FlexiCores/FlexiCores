@@ -25,9 +25,10 @@ typedef enum {
 
 /* Program Pages */
 char* linkage;
-char* multiplication;
-char* comparator;
-char* count_set_bit;
+char* add;
+char* subtract;
+char* multiply;
+char* divide;
 
 /* State Machine Information */
 typedef enum {
@@ -35,15 +36,17 @@ typedef enum {
     OPERATION_1,
     OPERATION_2,
     OPERATION_3,
-    EXIT,
-    COUNT_SET_BIT,
+    SUM,
+    DIVIDE,
     MULTIPLY,
-    COMPARE,
+    SUBTRACT,
     OTHER_1,
     OTHER_2,
     OTHER_3,
-    RETURN_WAIT,
-    RETRIEVE_RESULT,
+    RETURN_WAIT_1,
+    RETRIEVE_RESULT_1,
+    RETURN_WAIT_2,
+    RETRIEVE_RESULT_2,
     RETURN,
     INPUT_R2,
     INPUT_R3,
@@ -159,8 +162,8 @@ void update_rf(uint8_t instr, uint8_t result)
 
 void update_PC(uint8_t instr)
 {
-    printf("instr & BR_MASK: %d\n", instr & BR_MASK);
-    printf("as.A & 0x08 : %d\n", as.A & 0x08);
+    // printf("instr & BR_MASK: %d\n", instr & BR_MASK);
+    // printf("as.A & 0x08 : %d\n", as.A & 0x08);
     if ((instr & BR_MASK) && (as.A & 0x08)) {
         as_next.PC = instr & BR_EXTRACT;
     }
@@ -186,25 +189,27 @@ void restart(void)
 
 void run(const char* mem, int ncycles)
 {
+    int temp;
+    int is_dividing;
     restart();
 
     /* Initialize State Machine */
     state st = START;
     unsigned count = 0;
     while (ncycles--) {
-        printf("Cycle %0d:\n\t"
-               "PC: %0d\n\t"
-               "A:  %0d\n\t"
-               "RF[0]: %0d\n\t"
-               "RF[1]: %0d\n\t"
-               "RF[2]: %0d\n\t"
-               "RF[3]: %0d\n\t"
-               "RF[4]: %0d\n\t"
-               "RF[5]: %0d\n\t"
-               "RF[6]: %0d\n\t"
-               "RF[7]: %0d\n\t"
-               "State: %0d\n",
-               count++, as.PC, as.A, as.RF[0], as.RF[1], as.RF[2], as.RF[3], as.RF[4], as.RF[5], as.RF[6], as.RF[7], st);
+        // printf("Cycle %0d:\n\t"
+        //        "PC: %0d\n\t"
+        //        "A:  %0d\n\t"
+        //        "RF[0]: %0d\n\t"
+        //        "RF[1]: %0d\n\t"
+        //        "RF[2]: %0d\n\t"
+        //        "RF[3]: %0d\n\t"
+        //        "RF[4]: %0d\n\t"
+        //        "RF[5]: %0d\n\t"
+        //        "RF[6]: %0d\n\t"
+        //        "RF[7]: %0d\n\t"
+        //        "State: %0d\n",
+        //        count++, as.PC, as.A, as.RF[0], as.RF[1], as.RF[2], as.RF[3], as.RF[4], as.RF[5], as.RF[6], as.RF[7], st);
         uint8_t instr, operand, result;
         instr = fetch_instr(mem);
         operand = get_operand(instr);
@@ -245,17 +250,16 @@ void run(const char* mem, int ncycles)
             case OPERATION_2:
                 if(oport_lower == 1)
                 {
-                    st = EXIT;
-                    printf("=======================================\n");
-                    printf("Calculator Program exited successfully.\n");
-                    printf("=======================================\n");
-                    return;
+                    st = SUM;
+                    restart();
+                    mem = add;
                 }
                 else if(oport_lower == 2)
                 {
-                    st = COUNT_SET_BIT;
+                    st = DIVIDE;
+                    is_dividing = 1;
                     restart();
-                    mem = count_set_bit;
+                    mem = divide;
                 }
                 break;
             case OPERATION_3: 
@@ -263,19 +267,22 @@ void run(const char* mem, int ncycles)
                 {
                     st = MULTIPLY;
                     restart();
-                    mem = multiplication;
+                    mem = multiply;
                 }
                 else if(oport_lower == 0)
                 {
-                    st = COMPARE;
+                    st = SUBTRACT;
                     restart();
-                    mem = comparator;
+                    mem = subtract;
                 }
                 break;
-            case EXIT:
-                // This case will never be switched to.
+            case SUM:
+                if(oport_lower == 3)
+                {
+                    st = START;
+                }
                 break;
-            case COUNT_SET_BIT:
+            case DIVIDE:
                 if(oport_lower == 3)
                 {
                     st = START;
@@ -287,7 +294,7 @@ void run(const char* mem, int ncycles)
                     st = START;
                 }
                 break;  
-            case COMPARE:
+            case SUBTRACT:
                 if(oport_lower == 3)
                 {
                     st = START;
@@ -306,7 +313,7 @@ void run(const char* mem, int ncycles)
             case OTHER_2:
                 if(oport_lower == 2)
                 {
-                    st = RETURN_WAIT;
+                    st = RETURN_WAIT_1;
                 }
                 else if(oport_lower == 1)
                 {
@@ -323,17 +330,34 @@ void run(const char* mem, int ncycles)
                 else if(oport_lower == 2)
                 {
                     st = INPUT_R4;
-                    as.RF[1] = read_input("Enter cmd (R4): ");
+                    as.RF[1] = read_input("Enter cmd (1248 -> +-*/): ");
                 }
                 break;
-            case RETURN_WAIT:
-                st = RETRIEVE_RESULT;
+            case RETURN_WAIT_1:
+                st = RETRIEVE_RESULT_1;
                 break;
-            case RETRIEVE_RESULT:
+            case RETRIEVE_RESULT_1:
+                st = RETURN_WAIT_2;
+                temp = as.RF[0];
+                break;
+            case RETURN_WAIT_2:
+                st = RETRIEVE_RESULT_2;
+                break;
+            case RETRIEVE_RESULT_2:
                 st = RETURN;
-                printf("=======================================\n");
-                printf("Result of Operation: %0d\n", as.RF[0]);
-                printf("=======================================\n");
+                if(is_dividing == 1)
+                {
+                    printf("=======================================\n");
+                    printf("Result of Operation: %0d with Remainder %0d\n", temp, as.RF[0]);
+                    printf("=======================================\n");
+                }
+                else
+                {
+                    printf("=======================================\n");
+                    printf("Result of Operation: %0d\n", temp + (as.RF[0] * 16));
+                    printf("=======================================\n");
+                }
+                is_dividing = 0;
                 restart();
                 mem = linkage;
                 break;
@@ -401,16 +425,18 @@ int main(int argc, char** argv)
 {   
     /* Load program pages. */
     linkage = load_mem("linkage.lst");
-    multiplication = load_mem("calc_multiply.lst");
-    comparator = load_mem("calc_comparator.lst");
-    count_set_bit = load_mem("calc_count_set_bit.lst");
+    add = load_mem("calc_add.lst");
+    subtract = load_mem("calc_subtract.lst");
+    multiply = load_mem("calc_multiply.lst");
+    divide = load_mem("calc_divide.lst");
 
     /* Execute linkage. */
     run(linkage, 100000000);
 
     /* Free program pages. */
     free_mem(linkage);
-    free_mem(multiplication);
-    free_mem(comparator);
-    free_mem(count_set_bit);
+    free_mem(add);
+    free_mem(subtract);
+    free_mem(multiply);
+    free_mem(divide);
 }

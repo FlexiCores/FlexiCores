@@ -49,6 +49,8 @@ END:
     store r0
     load r7
     store r0
+    load r6
+    store r0
     xori 0
     xori 0
     xori 0
