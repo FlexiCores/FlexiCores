@@ -17,9 +17,6 @@
     addi 1
     store r3                ; Negate R3
 
-OPERAND:
-
-
 SUBTRACT:
     load r2
     add r3
