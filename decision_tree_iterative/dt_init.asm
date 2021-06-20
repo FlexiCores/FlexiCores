@@ -1,4 +1,4 @@
-; Iterative Decision Tree
+; Iterative Decision Tree of Height 7
 ;       1
 ;     /   \
 ;    2      3
