@@ -1,4 +1,7 @@
-; Iterative Decision Tree of Height 7
+; Iterative Decision Tree
+; Height:         7
+; Internal Nodes: 127
+; Leaf Nodes:     128
 ;       1
 ;     /   \
 ;    2      3
@@ -13,9 +16,9 @@
 ; -> If feature value < weight, branch right (node_index = node_index * 2 + 1).
 ; -> Node indices can be integers on the interval [1, 255].
 ; -> Feature values and weights can be integers on the interval [-8, 7].
-; -> Class lables can be integers on the interval [0, 15].
+; -> Class lables can be integers on the interval [0, 127].
 ;      Inputs: feature values and weights from IPORT.
-;     Outputs: class label displayed to OPORT.
+;     Outputs: class label index displayed to OPORT.
 ; Performance: 400 - 500 cycles generally
 ;   Registers:    R3 - feature value register
 ;                 R4 - weight register

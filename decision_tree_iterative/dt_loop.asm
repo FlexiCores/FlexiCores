@@ -8,6 +8,9 @@
     branch CONTINUE
 
 LEAF:
+    load r6
+    xori 8
+    store r6                ; subtract 128
     load r5
     addi 1
     store r0
@@ -17,6 +20,10 @@ LEAF:
     load r5
     addi 1
     store r0                ; leaf node reached
+    load r6
+    store r0
+    load r7
+    store r0                ; OPORT node index
 
 CONTINUE:
     load r5

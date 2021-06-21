@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <assert.h>
+#include <string.h>
 
 /* Architectural State */
 struct {
@@ -43,79 +44,17 @@ typedef enum {
     GET_INPUT_5,
     GET_INPUT_6,
     LOOP,
-    LEAF
+    LEAF_0,
+    LEAF_1,
+    LEAF_2,
+    LEAF_3,
+    LEAF_4
 } state;
 
-/* Feature Values and Weights */
-uint8_t feature[256] = {
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00
-};
-
-uint8_t weight[256] = {
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00,
-    00, 00, 00, 00, 00, 00, 00, 00
-};
+/* Feature Values, Weights, Class Labels */
+uint8_t feature[128] = { 0 };
+uint8_t weight[128] = { 0 };
+uint8_t class[128] = { 0 };
 
 op_t get_op(uint8_t instr);
 #define BR_MASK 0x080
@@ -137,6 +76,10 @@ void free_mem(char* mem);
 uint8_t read_input(char* prompt);
 void fill_features();
 void fill_weights();
+void fill_classes();
+void fill_features_file(const char* path);
+void fill_weights_file(const char* path);
+void fill_classes_file(const char* path);
 
 /* Read Keyboard Input */
 uint8_t read_input(char* prompt)
@@ -156,11 +99,16 @@ void fill_features()
 {
     int pos = 1;
 
-    for(int i = 0; i < 255; i++)
+    for(int i = 0; i < 127; i++)
     {
         feature[pos] = 7;
         pos++;
     }
+
+    // for(int i = 0; i < 128; i++)
+    // {
+    //     printf("%d. %d\n", i, feature[i]);
+    // }
 }
 
 /* Fill Weights Array */
@@ -203,7 +151,133 @@ void fill_weights()
         weight[pos] = 4;
         pos++;
     }
+
+    // for(int i = 0; i < 128; i++)
+    // {
+    //     printf("%d. %d\n", i, weight[i]);
+    // }
 }
+
+void fill_classes()
+{
+    for(int i = 0; i < 128; i++)
+    {
+        class[i] = i;
+    }
+
+    // for(int i = 0; i < 128; i++)
+    // {
+    //     printf("%d. %d\n", i, class[i]);
+    // }
+}
+
+/* Fill Features Array from File*/
+void fill_features_file(const char* path)
+{
+    int pos = 0;
+    FILE * fp = fopen(path, "r");
+    const char delim[3] = " ,";
+    char * token;
+
+
+    if(fp != NULL)
+    {
+        char buff[2000];
+        while(fgets(buff, sizeof(buff), fp) != NULL)
+        {
+            token = strtok(buff, delim);
+
+            while(token != NULL)
+            {
+                feature[pos] = atoi(token);
+                pos++;
+                token = strtok(NULL, delim);
+            }    
+        }
+    }
+    else
+    {
+        perror(path);
+        exit(1);
+    }
+
+    // for(int i = 0; i < 128; i++)
+    // {
+    //     printf("%d. %d\n", i, feature[i]);
+    // }
+}
+
+/* Fill Weights Array from File */
+void fill_weights_file(const char* path)
+{
+    int pos = 0;
+    FILE * fp = fopen(path, "r");
+    const char delim[3] = " ,";
+    char * token;
+
+
+    if(fp != NULL)
+    {
+        char buff[2000];
+        while(fgets(buff, sizeof(buff), fp) != NULL)
+        {
+            token = strtok(buff, delim);
+
+            while(token != NULL)
+            {
+                weight[pos] = atoi(token);
+                pos++;
+                token = strtok(NULL, delim);
+            }    
+        }
+    }
+    else
+    {
+        perror(path);
+        exit(1);
+    }
+
+    // for(int i = 0; i < 128; i++)
+    // {
+    //     printf("%d. %d\n", i, weight[i]);
+    // }
+}
+
+void fill_classes_file(const char* path)
+{
+    int pos = 0;
+    FILE * fp = fopen(path, "r");
+    const char delim[3] = " ,";
+    char * token;
+
+
+    if(fp != NULL)
+    {
+        char buff[2000];
+        while(fgets(buff, sizeof(buff), fp) != NULL)
+        {
+            token = strtok(buff, delim);
+
+            while(token != NULL)
+            {
+                class[pos] = atoi(token);
+                pos++;
+                token = strtok(NULL, delim);
+            }    
+        }
+    }
+    else
+    {
+        perror(path);
+        exit(1);
+    }
+
+    // for(int i = 0; i < 128; i++)
+    // {
+    //     printf("%d. %d\n", i, class[i]);
+    // }
+}
+
 
 // ADD:   [0|000|0|reg]
 // ADDI:  [0|100|x|xxx]
@@ -281,8 +355,8 @@ void update_rf(uint8_t instr, uint8_t result)
 
 void update_PC(uint8_t instr)
 {
-    printf("instr & BR_MASK: %d\n", instr & BR_MASK);
-    printf("as.A & 0x08 : %d\n", as.A & 0x08);
+    // printf("instr & BR_MASK: %d\n", instr & BR_MASK);
+    // printf("as.A & 0x08 : %d\n", as.A & 0x08);
     if ((instr & BR_MASK) && (as.A & 0x08)) {
         as_next.PC = instr & BR_EXTRACT;
     }
@@ -316,19 +390,19 @@ void run(const char* mem, int ncycles)
 
     unsigned count = 0;
     while (ncycles--) {
-        printf("Cycle %0d:\n\t"
-               "PC: %0d\n\t"
-               "A:  %0d\n\t"
-               "RF[0]: %0d\n\t"
-               "RF[1]: %0d\n\t"
-               "RF[2]: %0d\n\t"
-               "RF[3]: %0d\n\t"
-               "RF[4]: %0d\n\t"
-               "RF[5]: %0d\n\t"
-               "RF[6]: %0d\n\t"
-               "RF[7]: %0d\n\t"
-               "State: %0d\n",
-               count++, as.PC, as.A, as.RF[0], as.RF[1], as.RF[2], as.RF[3], as.RF[4], as.RF[5], as.RF[6], as.RF[7], st);
+        // printf("Cycle %0d:\n\t"
+        //        "PC: %0d\n\t"
+        //        "A:  %0d\n\t"
+        //        "RF[0]: %0d\n\t"
+        //        "RF[1]: %0d\n\t"
+        //        "RF[2]: %0d\n\t"
+        //        "RF[3]: %0d\n\t"
+        //        "RF[4]: %0d\n\t"
+        //        "RF[5]: %0d\n\t"
+        //        "RF[6]: %0d\n\t"
+        //        "RF[7]: %0d\n\t"
+        //        "State: %0d\n",
+        //        count++, as.PC, as.A, as.RF[0], as.RF[1], as.RF[2], as.RF[3], as.RF[4], as.RF[5], as.RF[6], as.RF[7], st);
         uint8_t instr, operand, result;
         instr = fetch_instr(mem);
         operand = get_operand(instr);
@@ -380,9 +454,7 @@ void run(const char* mem, int ncycles)
                 }
                 else if(oport_lower == 1)
                 {
-                    st = LEAF;
-                    printf("LEAF NODE REACHED \n");
-                    return;
+                    st = LEAF_0;
                 }
                 break;
             case LOOP:
@@ -391,7 +463,25 @@ void run(const char* mem, int ncycles)
                     st = START;
                 }
                 break;
-            case LEAF:
+            case LEAF_0:
+                st = LEAF_1;
+                break;
+            case LEAF_1:
+                st = LEAF_2;
+                temp = (as.RF[0] & 0xfUL) * 16;
+                break;
+            case LEAF_2:
+                st = LEAF_3;
+                break;
+            case LEAF_3:
+                st = LEAF_4;
+                temp += (as.RF[0] & 0xfUL);
+                printf("=======================================\n");
+                printf("Classified as Label %d\n", class[temp]);
+                printf("=======================================\n");
+                return;
+                break;
+            case LEAF_4:
                 if(oport_lower == 3)
                 {
                     st = START;
@@ -471,7 +561,11 @@ int main(int argc, char** argv)
 
     /* Fill the features and weights */
     fill_features();
-    fill_weights();
+    // fill_weights();
+    // fill_classes();
+    // fill_features_file("features.txt");
+    fill_weights_file("weights.txt");
+    fill_classes_file("classes.txt");
 
     /* Execute linkage. */
     run(dt_init, 100000000);
