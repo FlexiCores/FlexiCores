@@ -36,23 +36,21 @@ typedef enum {
     OPERATION_0,
     OPERATION_1,
     OPERATION_2,
-    X,
-    L,
-    R,
-    ARR_0,
-    ARR_1,
-    ARR_2,
+    INPUT_0,
+    INPUT_1,
+    INPUT_2,
+    INPUT_3,
     LOOP,
-    RETURN_0,
-    RETURN_1,
-    RETURN_2
+    END,
+    OUTPUT_WAIT_0,
+    OUTPUT_WAIT_1,
+    OUTPUT_DISPLAYED
 } state;
 
-/* Sorted Array Information */
-uint8_t arr[8] = { 0 };         // The sorted array
-uint8_t size = 0;               // The number of elements in the array
-uint8_t x;                      // The element to search for
-
+/* Inputs */
+uint8_t arr[100] = { 0 };       // Input Stream
+uint8_t size = 0;               // The number of elements in the input stream
+uint8_t arr_index = 0;          // The index to input stream
 
 op_t get_op(uint8_t instr);
 #define BR_MASK 0x080
@@ -110,18 +108,7 @@ void fill_input_file(const char* path)
             arr[size] = atoi(token);
             size++;
             token = strtok(NULL, delim);
-            if(size == 8 && token != NULL)
-            {
-                perror("input array is too large");
-                exit(1);
-            }
         }    
-        if(fgets(buff, sizeof(buff), fp) == NULL)
-        {
-            perror("fgets");
-            exit(1);
-        }
-        x = atoi(buff);
     }
     else
     {
@@ -129,7 +116,13 @@ void fill_input_file(const char* path)
         exit(1);
     }
 
-    printf("Sorted Array: ");
+    if(size != 19)
+    {
+        printf("Input Stream must be 19 values. Current value: %d.\n", size);
+        exit(1);
+    }
+    
+    printf("Input Stream: ");
     for(int i = 0; i < size; i++)
     {
         if(i == size - 1)
@@ -142,8 +135,8 @@ void fill_input_file(const char* path)
         }
         
     }
-    printf("size: %d\n", size);
-    printf("x: %d\n", x);
+    printf("Size of Input Stream: %d\n", size);
+    printf("======================================================================\n");
 }
 
 // ADD:   [0|000|0|reg]
@@ -306,22 +299,24 @@ void run(const char* mem, int ncycles)
             case OTHER_1:
                 if(oport_lower == 0)
                 {
-                    st = L;
-                    as.RF[1] = 0;
+                    st = INPUT_1;
+                    as.RF[1] = arr[arr_index];
+                    arr_index++;
                 }
                 else if(oport_lower == 2)
                 {
-                    st = X;
-                    as.RF[1] = x;
+                    st = INPUT_0;
+                    as.RF[1] = arr[arr_index];
+                    arr_index++;
                 }
                 break;
-            case X:
+            case INPUT_0:
                 if(oport_lower == 3)
                 {
                     st = START;
                 }
                 break;
-            case L:
+            case INPUT_1:
                 if(oport_lower == 3)
                 {
                     st = START;
@@ -330,28 +325,24 @@ void run(const char* mem, int ncycles)
             case OTHER_2:
                 if(oport_lower == 1)
                 {
-                    st = R;
-                    as.RF[1] = size - 1;
+                    st = INPUT_2;
+                    as.RF[1] = arr[arr_index];
+                    arr_index++;
                 }
                 else if(oport_lower == 2)
                 {
-                    st = ARR_0;
+                    st = INPUT_3;
+                    as.RF[1] = arr[arr_index];
+                    arr_index++;
                 }
                 break;
-            case R:
+            case INPUT_2:
                 if(oport_lower == 3)
                 {
                     st = START;
                 }
                 break;
-            case ARR_0:
-                st = ARR_1;
-                break;
-            case ARR_1:
-                st = ARR_2;
-                as.RF[1] = arr[(as.RF[0] & 0xfUL)];
-                break;
-            case ARR_2:
+            case INPUT_3:
                 if(oport_lower == 3)
                 {
                     st = START;
@@ -361,7 +352,11 @@ void run(const char* mem, int ncycles)
                 if(oport_lower == 2)
                 {
                     st = OPERATION_1;
-                }  
+                }
+                else if(oport_lower == 0)
+                {
+                    st = OPERATION_2;
+                }
                 break;
             case OPERATION_1:
                 if(oport_lower == 0)
@@ -372,7 +367,10 @@ void run(const char* mem, int ncycles)
                 }
                 else if(oport_lower == 1)
                 {
-                    st = RETURN_0;
+                    st = END;
+                    printf("End of Input Stream Reached.\n");
+                    printf("%d", arr_index);
+                    return;
                 }
                 break;
             case LOOP:
@@ -381,31 +379,32 @@ void run(const char* mem, int ncycles)
                     st = START;
                 }
                 break;
-            case RETURN_0:
-                st = RETURN_1;
-                break;
-            case RETURN_1:
-                st = RETURN_2;
-                if((as.RF[0] & 0xfUL) == 15)
-                {
-                    printf("=======================================\n");
-                    printf("Element Not Found\n");
-                    printf("=======================================\n");
-                }
-                else
-                {
-                    printf("=======================================\n");
-                    printf("Found! Index: %d\n", as.RF[0]);
-                    printf("=======================================\n");
-                }
-                return;
-                break;
-            case RETURN_2:
+            case END:
                 if(oport_lower == 3)
                 {
                     st = START;
                 }
                 break;
+            case OPERATION_2:
+                if(oport_lower == 2)
+                {
+                    st = OUTPUT_WAIT_0;
+                }
+                break;
+            case OUTPUT_WAIT_0:
+                st = OUTPUT_WAIT_1;
+                break;
+            case OUTPUT_WAIT_1:
+                st = OUTPUT_DISPLAYED;
+                printf("%d\n", as.RF[0]);
+                break;
+            case OUTPUT_DISPLAYED:
+                if(oport_lower == 3)
+                {
+                    st = START;
+                }
+                break;
+
         }   
     }
 }

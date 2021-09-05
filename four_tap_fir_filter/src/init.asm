@@ -2,11 +2,11 @@
 ;
 ; -> Implement four tap FIR filter.
 ;
-;      Inputs: a sequence of 16 inputs value (possibly from an external sensor) [-2, 2]
+;      Inputs: a sequence of 19 inputs value (possibly from an external sensor) [-2, 2]
 ;     Weights: weights of the filter: 1, 0, -1, 1                               [-1, 1]
-;     Outputs: a sequence of 13 outputs value                                   [-8, 7]
+;     Outputs: a sequence of 16 outputs value                                   [-8, 7]
 ;
-; Performance: 
+; Performance: Always 1045 cycles.
 ;   Registers: R2 - input A
 ;              R3 - input B
 ;              R4 - input C

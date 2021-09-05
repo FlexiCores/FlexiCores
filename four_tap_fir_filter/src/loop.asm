@@ -15,6 +15,11 @@
     add r6
     store r6
 
+    load r3
+    store r2
+    load r4
+    store r3
+
     load r5
     addi 2
     store r0
@@ -25,18 +30,12 @@
     addi 2
     store r0                
     load r1
+    store r4                ; shift input registers
     add r6 
     store r6                ; IPORT input 3
     load r5
     addi 3
     store r0                ; reset FSM
-
-    load r3
-    store r2
-    load r4
-    store r3
-    load r1
-    store r4                ; shift input registers
 
     load r5
     addi 1
