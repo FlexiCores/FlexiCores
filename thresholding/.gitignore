@@ -1,0 +1,10 @@
+hex/
+csrc
+simv
+*lst
+*.tee
+simv
+simv.daidir
+ucli.key
+*.out
+*.vcd
