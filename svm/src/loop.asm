@@ -5,9 +5,69 @@
     store r0                ; reset FSM
 
     ; Add b to a*X1
+;    load r4
+;    add r7
+;    store r7
+
+    ; Wk2
     load r4
-    add r7
+    branch MSB_ONE
+
+CONTINUE:
+    load r7
+    branch MIGHT_OVERFLOW
+    load r4
+    addi 0xf
+    store r4
+    branch DONE_ADDING
+    load r7
+    addi 1
     store r7
+    branch CONTINUE
+    xori 0xf
+    branch CONTINUE
+    ; Wk2
+
+MIGHT_OVERFLOW:
+    load r4
+    addi 0xf
+    store r4
+    branch DONE_ADDING
+    load r7
+    addi 1
+    store r7
+    branch CONTINUE         ; NO OVERFLOW
+    load r6                 ; OVERFLOWED
+    addi 1
+    store r6
+    branch CONTINUE
+    xori 0xf
+    branch CONTINUE
+
+MSB_ONE:
+    load r4
+    addi 8
+    store r4
+    load r7
+    branch OVERFLOW
+    load r7
+    addi 8
+    store r7
+    branch CONTINUE
+    xori 0xf
+    branch CONTINUE
+
+OVERFLOW:
+    load r7
+    addi 8
+    store r7
+    load r6
+    addi 1
+    store r6
+    branch CONTINUE
+    xori 0xf
+    branch CONTINUE
+DONE_ADDING:
 
     load r5
     addi 2
@@ -90,9 +150,9 @@ CLASS_ONE:
 CLASS_ZERO:
     load r5
     store r2
-    branch END
-    xori 0xf
-    branch END
+;    branch END
+;    xori 0xf
+;    branch END
 
 END:
     load r5

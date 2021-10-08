@@ -27,7 +27,7 @@
     store r0                ; reset FSM
 
     load r5
-    addi 3                  ; IMPORTANT: the immediate value here is "a"
+    addi 15                  ; IMPORTANT: the immediate value here is "a"
     store r3
 
     load r5
