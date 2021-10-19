@@ -46,8 +46,22 @@
     store r2
 
     load r7
+    branch MIGHT_OVERFLOW
+    load r7
     addi 1
     store r7
+    branch LOOP
+    xori 0xf
+    branch LOOP
+
+MIGHT_OVERFLOW:
+    load r7
+    addi 1
+    store r7
+    branch LOOP
+    load r6                 ; OVERFLOWED
+    addi 1
+    store r6
     branch LOOP
     xori 0xf
     branch LOOP
@@ -67,6 +81,8 @@ INPUT_CHANGED:
     addi 2
     store r0    
     load r7
+    store r0
+    load r6
     store r0                ; output displayed
     load r5
     addi 3
@@ -76,6 +92,8 @@ INPUT_CHANGED:
     load r5
     addi 1
     store r7
+    load r5
+    store r6
 
 LOOP:
     load r5
@@ -99,6 +117,8 @@ END:
     addi 2
     store r0    
     load r7
+    store r0
+    load r6
     store r0                ; output displayed
     load r5
     addi 3

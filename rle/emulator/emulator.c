@@ -41,11 +41,16 @@ typedef enum {
     END,
     OUTPUT_WAIT_0,
     OUTPUT_WAIT_1,
-    OUTPUT_DISPLAYED
+    OUTPUT_WAIT_2,
+    OUTPUT_WAIT_3,
+    OUTPUT_DISPLAYED,
+    OUTPUT_INITIAL_0,
+    OUTPUT_INITIAL_1,
+    OUTPUT_INITIAL_2
 } state;
 
 /* Inputs */
-uint8_t arr[2000] = { 0 };       // Input Stream
+uint8_t arr[10000] = { 0 };       // Input Stream
 uint8_t size = 0;                // The number of elements in the input stream
 uint8_t arr_index = 0;           // The index to input stream
 
@@ -233,6 +238,7 @@ void restart(void)
 
 void run(const char* mem, int ncycles)
 {
+    int temp;
     restart();
 
     /* Initialize State Machine */
@@ -343,14 +349,26 @@ void run(const char* mem, int ncycles)
                 {
                     st = OUTPUT_WAIT_0;
                 }
+                else if(oport_lower == 1)
+                {
+                    st = OUTPUT_INITIAL_0;
+                }
                 break;
             case OUTPUT_WAIT_0:
                 st = OUTPUT_WAIT_1;
                 break;
             case OUTPUT_WAIT_1:
-                st = OUTPUT_DISPLAYED;
-                printf("%d\n", as.RF[0]);
+                st = OUTPUT_WAIT_2;
+                temp = as.RF[0];
+                
                 // printf("ARRAY INDEX: %d\n", arr_index); 
+                break;
+            case OUTPUT_WAIT_2:
+                st = OUTPUT_WAIT_3;
+                break;
+            case OUTPUT_WAIT_3:
+                st = OUTPUT_DISPLAYED;
+                printf("%d\n", temp + (as.RF[0] * 16));
                 break;
             case OUTPUT_DISPLAYED:
                 if(oport_lower == 3)
@@ -358,6 +376,20 @@ void run(const char* mem, int ncycles)
                     st = START;
                 }
                 break;
+            case OUTPUT_INITIAL_0:
+                st = OUTPUT_INITIAL_1;
+                break;
+            case OUTPUT_INITIAL_1:
+                st = OUTPUT_INITIAL_2;
+                printf("%d\n", as.RF[0]);
+                break;
+            case OUTPUT_INITIAL_2:
+                if(oport_lower == 3)
+                {
+                    st = START;
+                }
+                break;
+
         }   
     }
 }
@@ -404,7 +436,7 @@ int main(int argc, char** argv)
     fill_input_file("input.txt");
 
     /* Execute linkage. */
-    run(init, 30000);
+    run(init, 30000000);
 
     /* Free program pages. */
     free_mem(init);

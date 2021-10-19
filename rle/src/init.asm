@@ -1,7 +1,7 @@
 ; Run-Length Encoder
 ;
 ;      Inputs: a time series of input values, denoted by x(t)                            {0, 1}   
-;     Outputs: a sequence of numbers encoding the number of 0s and 1s in the input       [0, 15]
+;     Outputs: a sequence of numbers encoding the number of 0s and 1s in the input       [0, 255]
 ;           
 ;              -> the first output indicates whether the input stream starts with 0 or 1
 ;              -> each additional output indicates the number of consecutive 0s and 1s
@@ -14,10 +14,10 @@
 ; Performance: 
 ;   Registers: R2    - prev input
 ;              R3    - curr input
-;              R4    -  
+;              R4    - temp 
 ;              R5    - 0
 ;              R6    - 
-;              R7    - counter  
+;              R6:R7 - counter  
 ;
 ; -> Inputs read from IPORT, outputs displayed to OPORT
 
@@ -29,6 +29,8 @@
     addi 3
     store r0                ; reset FSM
 
+    load r5
+    store r6                
     load r5
     store r7                ; clear output
 
@@ -55,7 +57,7 @@
     addi 0
     store r0
     load r5
-    addi 2
+    addi 1
     store r0    
     load r2
     store r0                ; output displayed
