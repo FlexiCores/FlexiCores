@@ -1,0 +1,7 @@
+{reg:[
+  {bits: 1, name: '0', type: 2},
+  {bits: 1, name: 'p', type: 5},
+  {bits: 1, name: 'z', type: 5},
+  {bits: 1, name: 'n', type: 5},
+  {bits: 3, name: '011'}
+],config:{bits:7, lanes:1}}

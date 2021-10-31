@@ -1,0 +1,4 @@
+{reg:[
+  {bits: 7, name: 'target', type: 5},
+  {bits: 1, name: '1'}
+],config:{bits:8,lanes:1}}
