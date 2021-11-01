@@ -1,0 +1,6 @@
+csrc
+simv
+simv.daidir
+*.vcd
+verdiLog
+*.key
