@@ -6,7 +6,7 @@
     addi 1
     store r0        ; clear R0
     load r0
-    addi 0          ; set operand (R2)
+    addi 0xf          ; set operand (R2)
     store r2        
     load r0
     addi 3
