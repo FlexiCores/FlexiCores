@@ -93,6 +93,7 @@ module tb;
         // Will print to the screen anytime one of the 'monitored' signals
         // changes.
         $monitor("PC: %2h", PC);
+        $monitor("OPORT: %2h", OPORT);
 
         while (cycles--) begin
             if (PC == last_pc) begin
