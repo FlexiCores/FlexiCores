@@ -20,33 +20,33 @@
     store r0                ; reset FSM
 
     load r2                 ; start comparing
-    branch NX
+    branch n NX
     load r3 
-    branch PN
+    branch n PN
 
 NN:
     load r2
     nandi 0xf
     addi 1
     add r3
-    branch EXCEED
+    branch n EXCEED
     xori 0xf
-    branch NOTEXCEED
+    branch n NOTEXCEED
 
 NX:
     load r3
-    branch NN
+    branch n NN
     xori 0xf
-    branch NP
+    branch n NP
 
 PN:
-    branch EXCEED
+    branch n EXCEED
     xori 0xf
-    branch EXCEED
+    branch n EXCEED
 NP:
-    branch NOTEXCEED
+    branch n NOTEXCEED
     xori 0xf
-    branch NOTEXCEED
+    branch n NOTEXCEED
 
 EXCEED:
     load r5
@@ -67,9 +67,9 @@ EXCEED:
     load r5
     addi 3
     store r0                ; reset FSM
-    branch LOOP
+    branch n LOOP
     xori 0xf 
-    branch LOOP
+    branch n LOOP
 
 NOTEXCEED:
     load r5
