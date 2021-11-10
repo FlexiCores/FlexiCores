@@ -58,16 +58,16 @@
 
     load r7
     store r6
-    branch LOOP
+    branch n LOOP
     add r6
     store r6
-    branch LOOP
+    branch n LOOP
     add r6
     store r6
-    branch LOOP
+    branch n LOOP
     add r6
     store r6
-    branch LOOP
+    branch n LOOP
 
     load r5
     addi 1

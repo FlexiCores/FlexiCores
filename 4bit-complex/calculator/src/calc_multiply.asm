@@ -12,17 +12,17 @@
     load r5
     store r0
     load r3       
-    branch OPERAND
+    branch n OPERAND
     load r3
     addi 0xf
     store r3
-    branch END      ; check if second operand is 0
+    branch n END      ; check if second operand is 0
 
 MULTIPLY:
     load r2
-    branch ONE_X
+    branch n ONE_X
     load r7
-    branch ONE_ZERO_ZERO_ONE
+    branch n ONE_ZERO_ZERO_ONE
     load r2
     add r7
     store r7
@@ -30,15 +30,15 @@ CONTINUE:
     load r3
     addi 0xf
     store r3
-    branch END
+    branch n END
     xori 0xf
-    branch MULTIPLY
+    branch n MULTIPLY
 
 OPERAND:
     load r2
-    branch ONE_X
+    branch n ONE_X
     load r7
-    branch ONE_ZERO_ZERO_ONE
+    branch n ONE_ZERO_ZERO_ONE
     load r2
     add r7
     store r7
@@ -46,18 +46,18 @@ CONTINUE_OPERAND:
     load r3
     addi 0xf
     store r3
-    branch OPERAND
+    branch n OPERAND
     load r3
     addi 0xf
     store r3
     xori 0xf
-    branch MULTIPLY
+    branch n MULTIPLY
 
 ONE_X:
     load r7
-    branch ONE_ONE
+    branch n ONE_ONE
     xori 0xf
-    branch ONE_ZERO_ZERO_ONE
+    branch n ONE_ZERO_ZERO_ONE
 
 ONE_ONE:
     load r6
@@ -67,23 +67,23 @@ ONE_ONE:
     add r7
     store r7
     load r3
-    branch CONTINUE_OPERAND
+    branch n CONTINUE_OPERAND
     xori 0xf
-    branch CONTINUE
+    branch n CONTINUE
 
 ONE_ZERO_ZERO_ONE:
     load r2
     add r7
     store r7
-    branch SKIP
+    branch n SKIP
     load r6
     addi 1
     store r6
 SKIP:
     load r3
-    branch CONTINUE_OPERAND
+    branch n CONTINUE_OPERAND
     xori 0xf
-    branch CONTINUE
+    branch n CONTINUE
 
 END:
     load r5

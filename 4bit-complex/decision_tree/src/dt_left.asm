@@ -32,36 +32,36 @@
     store r4
 
     load r3
-    branch NX
+    branch n NX
     load r4 
-    branch PN
+    branch n PN
 
     load r4
     nandi 0xf
     addi 1
     add r3
-    branch RIGHT
+    branch n RIGHT
     xori 0xf
-    branch LEFT
+    branch n LEFT
 
 NX:
     load r4
-    branch NN
+    branch n NN
     xori 0xf
-    branch NP
+    branch n NP
 
 PN:
-    branch LEFT
+    branch n LEFT
 NP:
-    branch RIGHT
+    branch n RIGHT
 NN:
     load r4
     nandi 0xf
     addi 1
     add r3
-    branch RIGHT
+    branch n RIGHT
     xori 0xf
-    branch LEFT
+    branch n LEFT
 
 ; CASE 1
 RIGHT:

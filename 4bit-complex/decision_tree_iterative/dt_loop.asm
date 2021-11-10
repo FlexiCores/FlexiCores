@@ -3,9 +3,9 @@
     store r0                ; reset FSM
 
     load r6
-    branch LEAF
+    branch n LEAF
     xori 0xf
-    branch CONTINUE
+    branch n CONTINUE
 
 LEAF:
     load r6
@@ -50,45 +50,45 @@ CONTINUE:
     store r0                ; reset FSM
 
     load r3                 ; start comparing
-    branch NX
+    branch n NX
     load r4 
-    branch PN
+    branch n PN
 
 NN:
     load r4
     nandi 0xf
     addi 1
     add r3
-    branch RIGHT
+    branch n RIGHT
     xori 0xf
-    branch LEFT
+    branch n LEFT
 
 NX:
     load r4
-    branch NN
+    branch n NN
     xori 0xf
-    branch NP
+    branch n NP
 
 PN:
-    branch LEFT
+    branch n LEFT
     xori 0xf
-    branch LEFT
+    branch n LEFT
 NP:
-    branch RIGHT
+    branch n RIGHT
     xori 0xf
-    branch RIGHT
+    branch n RIGHT
 
 LEFT:
     load r7                     ; node_index = node_index * 2
-    branch OVERFLOW_LEFT
+    branch n OVERFLOW_LEFT
     add r7
     store r7
     load r6
     add r6
     store r6
-    branch LOOP
+    branch n LOOP
     xori 0xf
-    branch LOOP
+    branch n LOOP
 
 OVERFLOW_LEFT: 
     add r7
@@ -99,13 +99,13 @@ OVERFLOW_LEFT:
     load r6
     addi 1
     store r6
-    branch LOOP
+    branch n LOOP
     xori 0xf
-    branch LOOP
+    branch n LOOP
 
 RIGHT:
     load r7                     ; node_index = node_index * 2 + 1
-    branch OVERFLOW_RIGHT
+    branch n OVERFLOW_RIGHT
     add r7
     store r7
     load r6
@@ -114,9 +114,9 @@ RIGHT:
     load r7
     addi 1
     store r7
-    branch LOOP
+    branch n LOOP
     xori 0xf
-    branch LOOP
+    branch n LOOP
 
 OVERFLOW_RIGHT: 
     add r7
@@ -130,9 +130,9 @@ OVERFLOW_RIGHT:
     load r7
     addi 1
     store r7
-    branch LOOP
+    branch n LOOP
     xori 0xf
-    branch LOOP
+    branch n LOOP
 
 LOOP:
     load r5

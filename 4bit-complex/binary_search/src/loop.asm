@@ -3,34 +3,34 @@
     store r0                ; reset FSM
 
     load r4                 ; if (r >= l)
-    branch NX
+    branch n NX
     load r3 
-    branch PN
+    branch n PN
 
 NN:
     load r3
     nandi 0xf
     addi 1
     add r4
-    branch EDGE_CASE
+    branch n EDGE_CASE
     xori 0xf
-    branch SEARCH
+    branch n SEARCH
 
 NX:
     load r3
-    branch NN
+    branch n NN
     xori 0xf
-    branch NP
+    branch n NP
 
 PN:
-    branch SEARCH
+    branch n SEARCH
     xori 0xf
-    branch SEARCH
+    branch n SEARCH
 
 NP:
-    branch EDGE_CASE
+    branch n EDGE_CASE
     xori 0xf
-    branch EDGE_CASE
+    branch n EDGE_CASE
 
 SEARCH:
     load r5             ; int mid = l + (r - l) / 2;
@@ -45,14 +45,14 @@ SUBTRACT:
     load r5
     addi 0xe
     add r6
-    branch DIVISION_END
+    branch n DIVISION_END
     store r6
     load r7
     addi 1
     store r7
-    branch SUBTRACT
+    branch n SUBTRACT
     xori 0xf
-    branch SUBTRACT
+    branch n SUBTRACT
 
 DIVISION_END:
     load r7
@@ -78,9 +78,9 @@ DIVISION_END:
 
 
     load r6
-    branch NXNX
+    branch n NXNX
     load r2
-    branch LARGER
+    branch n LARGER
 
 NNNN:
     load r2             ; arr[mid] >=< x
@@ -88,45 +88,45 @@ NNNN:
     addi 1
     add r6
     store r6
-    branch LESS
+    branch n LESS
     load r6
     add r6
     store r6
-    branch LARGER
+    branch n LARGER
     load r6
     add r6
     store r6
-    branch LARGER
+    branch n LARGER
     load r6
     add r6
     store r6
-    branch LARGER
+    branch n LARGER
     xori 0xf
-    branch EQUAL
+    branch n EQUAL
 
 NXNX:
     load r2
-    branch NNNN
+    branch n NNNN
     xori 0xf
-    branch LESS
+    branch n LESS
 
 ; binarySearch(arr, mid + 1, r, x);
 LESS:
     load r7
     addi 1
     store r3
-    branch LOOP
+    branch n LOOP
     xori 0xf
-    branch LOOP
+    branch n LOOP
 
 ; return binarySearch(arr, l, mid - 1, x);
 LARGER:
     load r7
     addi 0xf
     store r4
-    branch LOOP
+    branch n LOOP
     xori 0xf
-    branch LOOP
+    branch n LOOP
 
 LOOP:
     load r5

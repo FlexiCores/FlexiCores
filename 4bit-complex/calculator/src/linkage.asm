@@ -68,16 +68,16 @@
     store r0
     
     load r4
-    branch DIVIDE
+    branch n DIVIDE
     add r4
     store r4
-    branch MULTIPLY
+    branch n MULTIPLY
     add r4
     store r4
-    branch SUBTRACT
+    branch n SUBTRACT
     add r4
     store r4
-    branch ADD
+    branch n ADD
 
 ADD:
     load r5

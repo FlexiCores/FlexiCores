@@ -14,9 +14,9 @@
     store r0
     
     load r2
-    branch NX
+    branch n NX
     load r3
-    branch PN
+    branch n PN
 
     load r3                 ; Negate R3
     nandi 0xf
@@ -26,21 +26,21 @@
 PP_SUBTRACT:
     load r2
     add r3
-    branch PP_REMAINDER
+    branch n PP_REMAINDER
     store r2
     load r7
     addi 1
     store r7
-    branch PP_SUBTRACT
+    branch n PP_SUBTRACT
     xori 0xf
-    branch PP_SUBTRACT
+    branch n PP_SUBTRACT
 
 PP_REMAINDER:
     load r2
     store r6
-    branch END
+    branch n END
     xori 0xf
-    branch END
+    branch n END
 
 END:
     load r5
@@ -61,21 +61,21 @@ END:
 
 NX:
     load r3
-    branch NN
+    branch n NN
     xori 0xf
-    branch NP
+    branch n NP
 
 PN:
     load r2
     add r3
-    branch PN_REMAINDER
+    branch n PN_REMAINDER
     store r2
     load r7
     addi 1
     store r7
-    branch PN
+    branch n PN
     xori 0xf
-    branch PN
+    branch n PN
 
 PN_REMAINDER:
     load r2
@@ -84,9 +84,9 @@ PN_REMAINDER:
     nandi 0xf
     addi 1
     store r7
-    branch END
+    branch n END
     xori 0xf
-    branch END
+    branch n END
 
 NN:
     load r2
@@ -96,23 +96,23 @@ NN:
 NN_SUBTRACT:
     load r2
     add r3
-    branch NN_REMAINDER
+    branch n NN_REMAINDER
     store r2
     load r7
     addi 1
     store r7
-    branch NN_SUBTRACT
+    branch n NN_SUBTRACT
     xori 0xf
-    branch NN_SUBTRACT
+    branch n NN_SUBTRACT
 
 NN_REMAINDER:
     load r2
     nandi 0xf
     addi 1
     store r6
-    branch END
+    branch n END
     xori 0xf
-    branch END
+    branch n END
 
 NP:
     load r2
@@ -126,14 +126,14 @@ NP:
 NP_SUBTRACT:
     load r2
     add r3
-    branch NP_REMAINDER
+    branch n NP_REMAINDER
     store r2
     load r7
     addi 1
     store r7
-    branch NP_SUBTRACT
+    branch n NP_SUBTRACT
     xori 0xf
-    branch NP_SUBTRACT
+    branch n NP_SUBTRACT
 
 NP_REMAINDER:
     load r2
@@ -144,6 +144,6 @@ NP_REMAINDER:
     nandi 0xf
     addi 1
     store r7
-    branch END
+    branch n END
     xori 0xf
-    branch END
+    branch n END
