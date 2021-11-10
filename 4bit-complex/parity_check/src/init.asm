@@ -86,7 +86,7 @@ CONTINUE:
     store r7
 
     load r4
-    branch LOOP
+    branch n LOOP
 
     load r5
     addi 2
@@ -106,12 +106,12 @@ CONTINUE:
     load r5
     addi 0xf
     store r4                ; set FLAG
-    branch CONTINUE
+    branch n CONTINUE
     
 LOOP:
     load r7
     xori 0xf
-    branch DISPLAY
+    branch n DISPLAY
     load r5
     addi 0x1
     store r7
