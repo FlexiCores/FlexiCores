@@ -20,7 +20,7 @@
     store r0                ; reset FSM
 
     load r3
-    branch END  
+    branch n END  
 
     load r3
     add r3
@@ -40,31 +40,31 @@
 
     load r2
     xor r4
-    branch INPUT_CHANGED
+    branch n INPUT_CHANGED
     
     load r3
     store r2
 
     load r7
-    branch MIGHT_OVERFLOW
+    branch n MIGHT_OVERFLOW
     load r7
     addi 1
     store r7
-    branch LOOP
+    branch n LOOP
     xori 0xf
-    branch LOOP
+    branch n LOOP
 
 MIGHT_OVERFLOW:
     load r7
     addi 1
     store r7
-    branch LOOP
+    branch n LOOP
     load r6                 ; OVERFLOWED
     addi 1
     store r6
-    branch LOOP
+    branch n LOOP
     xori 0xf
-    branch LOOP
+    branch n LOOP
 
 INPUT_CHANGED:
 
