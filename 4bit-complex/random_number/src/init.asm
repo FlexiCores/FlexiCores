@@ -92,7 +92,7 @@
     add r4
     store r4
     add r4
-    branch ADD_ONE
+    branch n ADD_ONE
 
 CONTINUE_ONE:
     load r2
@@ -100,13 +100,13 @@ CONTINUE_ONE:
     xori 0xf
     store r4
     add r4
-    branch ADD_TWO
+    branch n ADD_TWO
 
 CONTINUE_TWO:
     load r2
     nandi 0x8
     xori 0xf
-    branch ADD_THREE
+    branch n ADD_THREE
 
 CONTINUE_THREE:
     load r7
@@ -121,34 +121,34 @@ CONTINUE_THREE:
     store r2
     load r7
     store r3                ; curr <= next
-    branch LOOP
+    branch n LOOP
     xori 0xf
-    branch LOOP
+    branch n LOOP
 
 ADD_ONE:
 ; VIOLATED R5=0
     load r5
     addi 1
     store r5
-    branch CONTINUE_ONE
+    branch n CONTINUE_ONE
     xori 0xf
-    branch CONTINUE_ONE
+    branch n CONTINUE_ONE
 
 ADD_TWO:
     load r5
     addi 2
     store r5
-    branch CONTINUE_TWO
+    branch n CONTINUE_TWO
     xori 0xf
-    branch CONTINUE_TWO
+    branch n CONTINUE_TWO
 
 ADD_THREE:
     load r5
     addi 4
     store r5
-    branch CONTINUE_THREE
+    branch n CONTINUE_THREE
     xori 0xf
-    branch CONTINUE_THREE
+    branch n CONTINUE_THREE
 
 LOOP:
     load r5

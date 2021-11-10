@@ -18,7 +18,7 @@
     add r4
     store r4
     add r4
-    branch ADD_ONE
+    branch n ADD_ONE
 
 CONTINUE_ONE:
     load r3
@@ -26,13 +26,13 @@ CONTINUE_ONE:
     xori 0xf
     store r4
     add r4
-    branch ADD_TWO
+    branch n ADD_TWO
 
 CONTINUE_TWO:
     load r3
     nandi 0x8
     xori 0xf
-    branch ADD_THREE
+    branch n ADD_THREE
 
 CONTINUE_THREE:
     load r2
@@ -48,33 +48,33 @@ CONTINUE_THREE:
     store r3
     xor r7
     store r7
-    branch DISPLAY
+    branch n DISPLAY
     xori 0xf
-    branch DISPLAY
+    branch n DISPLAY
 
 ADD_ONE:
     load r2
     addi 1
     store r2
-    branch CONTINUE_ONE
+    branch n CONTINUE_ONE
     xori 0xf
-    branch CONTINUE_ONE
+    branch n CONTINUE_ONE
 
 ADD_TWO:
     load r2
     addi 2
     store r2
-    branch CONTINUE_TWO
+    branch n CONTINUE_TWO
     xori 0xf
-    branch CONTINUE_TWO
+    branch n CONTINUE_TWO
 
 ADD_THREE:
     load r2
     addi 4
     store r2
-    branch CONTINUE_THREE
+    branch n CONTINUE_THREE
     xori 0xf
-    branch CONTINUE_THREE
+    branch n CONTINUE_THREE
  
 
 
