@@ -11,51 +11,51 @@
 
     ; Wk2
     load r4
-    branch MSB_ONE
+    branch n MSB_ONE
 
 CONTINUE:
     load r7
-    branch MIGHT_OVERFLOW
+    branch n MIGHT_OVERFLOW
     load r4
     addi 0xf
     store r4
-    branch DONE_ADDING
+    branch n DONE_ADDING
     load r7
     addi 1
     store r7
-    branch CONTINUE
+    branch n CONTINUE
     xori 0xf
-    branch CONTINUE
+    branch n CONTINUE
     ; Wk2
 
 MIGHT_OVERFLOW:
     load r4
     addi 0xf
     store r4
-    branch DONE_ADDING
+    branch n DONE_ADDING
     load r7
     addi 1
     store r7
-    branch CONTINUE         ; NO OVERFLOW
+    branch n CONTINUE         ; NO OVERFLOW
     load r6                 ; OVERFLOWED
     addi 1
     store r6
-    branch CONTINUE
+    branch n CONTINUE
     xori 0xf
-    branch CONTINUE
+    branch n CONTINUE
 
 MSB_ONE:
     load r4
     addi 8
     store r4
     load r7
-    branch OVERFLOW
+    branch n OVERFLOW
     load r7
     addi 8
     store r7
-    branch CONTINUE
+    branch n CONTINUE
     xori 0xf
-    branch CONTINUE
+    branch n CONTINUE
 
 OVERFLOW:
     load r7
@@ -64,9 +64,9 @@ OVERFLOW:
     load r6
     addi 1
     store r6
-    branch CONTINUE
+    branch n CONTINUE
     xori 0xf
-    branch CONTINUE
+    branch n CONTINUE
 DONE_ADDING:
 
     load r5
@@ -86,46 +86,46 @@ DONE_ADDING:
 
 ;   COMPARE
     load r6
-    branch CLASS_ZERO
+    branch n CLASS_ZERO
     add r6
     store r6
-    branch CLASS_ZERO
+    branch n CLASS_ZERO
     add r6
     store r6
-    branch CLASS_ZERO
+    branch n CLASS_ZERO
     add r6
     store r6
-    branch CLASS_ZERO       ; we know R6 = 0
+    branch n CLASS_ZERO       ; we know R6 = 0
 
     load r3
-    branch ONE_X
+    branch n ONE_X
     load r7
-    branch CLASS_ZERO                 ; ZERO_ONE
+    branch n CLASS_ZERO                 ; ZERO_ONE
 
 COMPARE:
     xori 0
 DECREMENT:
     load r7
-    branch CLASS_ONE
+    branch n CLASS_ONE
     load r3
-    branch CLASS_ZERO
+    branch n CLASS_ZERO
     load r3
     addi 0xf
     store r3
     load r7
     addi 0xf
     store r7
-    branch DECREMENT
+    branch n DECREMENT
     xori 0xf
-    branch DECREMENT
+    branch n DECREMENT
 
 
 
 ONE_X:
     load r7
-    branch ONE_ONE
+    branch n ONE_ONE
     xori 0xf
-    branch CLASS_ONE                 ; ONE_ZERO
+    branch n CLASS_ONE                 ; ONE_ZERO
 
 ONE_ONE:
     load r3
@@ -134,25 +134,25 @@ ONE_ONE:
     load r7
     addi 8
     store r7                         ; subtract 8 from both
-    branch COMPARE
+    branch n COMPARE
     xori 0xf
-    branch COMPARE
+    branch n COMPARE
 
 
 CLASS_ONE:
     load r5
     addi 1
     store r2
-    branch END
+    branch n END
     xori 0xf
-    branch END
+    branch n END
 
 CLASS_ZERO:
     load r5
     store r2
-;    branch END
+;    branch n END
 ;    xori 0xf
-;    branch END
+;    branch n END
 
 END:
     load r5
