@@ -29,7 +29,7 @@
 
 ; DIVISION KERNEL (stripped down significantly since we only ever /2)
     load r2
-    branch NP
+    branch n NP
 
     load r3                 
     nandi 0xf
@@ -39,14 +39,14 @@
 PP_SUBTRACT:
     load r2
     add r3
-    branch END
+    branch n END
     store r2
     load r7
     addi 1
     store r7
-    branch PP_SUBTRACT
+    branch n PP_SUBTRACT
     xori 0xf
-    branch PP_SUBTRACT
+    branch n PP_SUBTRACT
 
 NP:
     load r2
@@ -60,23 +60,23 @@ NP:
 NP_SUBTRACT:
     load r2
     add r3
-    branch NP_DONE
+    branch n NP_DONE
     store r2
     load r7
     addi 1
     store r7
-    branch NP_SUBTRACT
+    branch n NP_SUBTRACT
     xori 0xf
-    branch NP_SUBTRACT
+    branch n NP_SUBTRACT
 
 NP_DONE:
     load r7
     nandi 0xf
     addi 1
     store r7
-    branch END
+    branch n END
     xori 0xf
-    branch END
+    branch n END
 ; DIVISION KERNEL
 
 END:
