@@ -203,7 +203,10 @@ if __name__ == '__main__':
         with open(args['<output-file>'], 'wb') as f:
             bstr: bytes = '\n'.join(list(map(
                 lambda z: f'{z:02x}', binary))).encode('utf-8')
-            f.write(bstr)
-            f.write(b'\n')
+            if args['-b']:
+                f.write(binary)
+            else:
+                f.write(bstr)
+                f.write(b'\n')
     else:
         stdwrite(binary)
